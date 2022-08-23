@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "Tool_For_AI"
+version = "0.1.0"
+description = ""
+authors = ["jjerry-k <jaeyeol2931@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+streamlit = "^1.12.0"
+opencv-python = "^4.6.0"
+pandas = "^1.4.3"
+icrawler = "^0.6.6"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+pymongo = "^4.2.0"
+pydantic = "^1.9.2"
+PyYAML = "^6.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
