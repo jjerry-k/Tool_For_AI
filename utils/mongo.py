@@ -1,16 +1,7 @@
-import streamlit as st
-
-from  passlib.context import CryptContext
+from utils.password import get_password_hash
 from schema import User, DB, MONGODB_USER_TABLE, MONGODB_WORK_TABLE
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
+# MongoDB
 def insert_user(user_info: User):
     if user_info["name"] in " ": 
         print("Delete space in username.")
@@ -27,16 +18,16 @@ def insert_user(user_info: User):
 
             user_info["password"] = get_password_hash(user_info["password"])
             DB[MONGODB_USER_TABLE].insert_one(user_info)
+    return username_found
 
 def delete_user(user_info: User):
     username_found = DB[MONGODB_USER_TABLE].find_one({"name": user_info["name"]})
     if username_found:
-        # if username_found["admin"]:
-        #     st.warning
         DB[MONGODB_USER_TABLE].delete_one({"name": user_info["name"]})
         print(f"Delete {user_info['name']}")
     else:
         print(f"'{user_info['name']}' not exists.")
+    return username_found
 
 def get_user():
     user_list = []

@@ -1,10 +1,8 @@
 import streamlit as st
 
-from utils import *
+from utils.mongo import *
+from utils.password import verify_password
 # from streamlit_utils.utils import key_shortcut
-
-def registration(username, password):
-    pass    
 
 # 계정 정보 일치여부 확인
 def is_valid(username, password):
@@ -19,11 +17,11 @@ def is_valid(username, password):
 def authenticate():
     # 로그인 기능
     st.session_state.authenticated = False
-    cols = st.columns(4)
-    cols[1].title("Login")
-    st.session_state.username = cols[2].text_input('Username', key='user', value="")
-    st.session_state.password = cols[2].text_input('Password', type="password", value="")
-    cols[2].button("Login", key='login', on_click=auth_callback)
+    cols = st.columns(1)
+    cols[0].title("Login")
+    st.session_state.username = cols[0].text_input('Username', key='user', value="")
+    st.session_state.password = cols[0].text_input('Password', type="password", value="")
+    cols[0].button("Login", key='login', on_click=auth_callback)
 
     # Enter 입력 시 로그인 버튼 눌러지도록 javascript 추가
     # key_shortcut('Login', 13)
