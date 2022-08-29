@@ -19,5 +19,8 @@ if is_authenticated():
         if flag:
             os.system(f"mkdir -p /disk/test/{keyword}")
             os.system(f"nohup poetry run python utils/crawling.py --root /disk/test --keyword {keyword} > /disk/test/{keyword}/log.out &")
+
+        # 크롤링 완료 여부 & DB 연동
+
     elif st.session_state.task == "Cleaning": 
         st.session_state["keyword"] = st.text_input("Keyword")

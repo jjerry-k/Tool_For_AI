@@ -1,0 +1,35 @@
+version: "2.4"
+services:
+  server:
+    build: 
+      dockerfile: Dockerfile
+      context: ./
+    volumes:
+      - ./:/app
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - DB_HOST=mongo
+      - DB=TOOL
+      - TZ=Asia/Seoul
+    networks:
+      - backend
+    depends_on:
+      - mongo
+    ports:
+      - "9091:8501"
+  mongo:
+    container_name: mongo
+    image: mongo:4.4.16-focal
+    volumes:
+      - /sdcard/mongo_tool:/data/db
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  data:
+    driver: local
