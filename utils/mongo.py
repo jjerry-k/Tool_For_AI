@@ -1,7 +1,9 @@
 from utils.password import get_password_hash
-from schema import User, DB, MONGODB_USER_TABLE, MONGODB_WORK_TABLE
+from schema import User, Data, DB, MONGODB_USER_TABLE, MONGODB_DATA_TABLE
 
-# MongoDB
+import datetime
+
+# User function
 def insert_user(user_info: User):
     if user_info["name"] in " ": 
         print("Delete space in username.")
@@ -11,7 +13,6 @@ def insert_user(user_info: User):
     else:    
         username_found = DB[MONGODB_USER_TABLE].find_one({"name": user_info["name"]})
         if username_found:
-            # st.error("This user already exists.")
             print(f"'{user_info['name']}' already exists.")
         else:
             print(f"'{user_info['name']}' not exists.")
@@ -35,13 +36,43 @@ def get_user():
         user_list.append(user)
     return user_list
 
-if __name__ == "__main__":
-    test = {"name": "", 
-            "admin": False,
-            "password": "1121"}
-    delete_user(test)
+# For initialize
+user_list = get_user()
 
-    # test = {"name": "admin", 
-    #         "admin": True,
+if "admin" not in user_list:
+    insert_user(
+                {"name": "admin", 
+                "admin": True,
+                "password": "1121"}
+                )
+
+# Data Function
+def insert_data(data_info: Data):
+    scheme = {
+        "time": datetime.datetime.now().strftime("%Y-%m-%d"),
+        "username": data_info["username"],
+        "keyword": data_info["keyword"],
+        "classname": data_info["classname"],
+        "isdone": False,
+        "data": [{"filename": filename, "status": "None"} for filename in data_info["data"]]
+    }
+    
+    DB[MONGODB_DATA_TABLE].insert_one(scheme)
+
+def update_data(data_info: Data):
+    pass
+
+def delete_data(data_info: Data):
+    pass
+
+
+if __name__ == "__main__":
+    # test = {"name": "", 
+    #         "admin": False,
     #         "password": "1121"}
-    # insert_user(test)
+    # delete_user(test)
+
+    test = {"name": "admin", 
+            "admin": True,
+            "password": "1121"}
+    insert_user(test)

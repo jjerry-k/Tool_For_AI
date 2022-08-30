@@ -1,4 +1,3 @@
-import os
 import pymongo
 import yaml
 from bson import ObjectId
@@ -10,7 +9,7 @@ with open(".cfg/mongo.yaml") as f:
 MONGODB_URL = cfg["MONGODB_URL"]
 MONGODB_DB = cfg["MONGODB_DB"]
 MONGODB_USER_TABLE = cfg["MONGODB_USER_TABLE"]
-MONGODB_WORK_TABLE = cfg["MONGODB_WORK_TABLE"]
+MONGODB_DATA_TABLE = cfg["MONGODB_DATA_TABLE"]
 
 CLIENT = pymongo.MongoClient(MONGODB_URL)
 
@@ -34,7 +33,7 @@ class PyObjectId(ObjectId):
 class User(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     name: str = Field(...)
-    permission: bool = Field(...)
+    admin: bool = Field(...)
     password: str = Field(...)
 
     class Config:
@@ -46,5 +45,25 @@ class User(BaseModel):
                 "name": "Jerry Kim",
                 "admin": True,
                 "password": "secret_code"
+            }
+        }
+
+class Data(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    username: str = Field(...)
+    keyword: str = Field(...)
+    classname:  str = Field(...)
+    data: dict = Field(...)
+
+    class Config:
+        allowed_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+        schema_extra = {
+            "example": {
+                "username": "Jerry Kim",
+                "keyword": "test",
+                "classname": "test",
+                "data": ["000001.jpg", "000002.jpg"]
             }
         }
