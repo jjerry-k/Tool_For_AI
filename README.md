@@ -14,9 +14,3 @@
 # After insatll docker and docker-compose
 docker-compose up -d
 '''
-
-## To do list
-
-- [ ] Tool description
-- [ ] Crawling
-- [ ] Data Inspection

@@ -8,16 +8,15 @@ services:
       - ./:/app
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      - /disk/tool/:/disk
     environment:
-      - DB_HOST=mongo
-      - DB=TOOL
       - TZ=Asia/Seoul
     networks:
       - backend
     depends_on:
       - mongo
     ports:
-      - "9091:8501"
+      - "8501:8501"
   mongo:
     container_name: mongo
     image: mongo:4.4.16-focal
@@ -25,6 +24,8 @@ services:
       - /sdcard/mongo_tool:/data/db
     networks:
       - backend
+    ports:
+      - "27016:27017"  # Local에서 mongo를 사용하고 있기 때문에 27016으로 binding
 
 networks:
   backend:

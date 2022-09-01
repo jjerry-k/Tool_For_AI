@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM python:3.9.13
 
 RUN sed -i 's/archive.ubuntu.com/ftp.daum.net/g' /etc/apt/sources.list
 RUN sed -i 's/security.ubuntu.com/ftp.daum.net/g' /etc/apt/sources.list
@@ -7,16 +7,7 @@ RUN set -xe \
     && apt-get update -y  \
     && apt-get upgrade -y
 
-RUN add-apt-repository ppa:deadsnakes/ppa
-
-RUN apt install -y python3.9
-
-RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
-    && python3.9 get-pip.py
-
 RUN pip3 install --upgrade pip setuptools wheel poetry
-
-RUN DEBIAN_FRONTEND=noninteractive TZ=Asia/Seoul apt-get -y install tzdata
 
 RUN apt-get install --no-install-recommends -y \
         build-essential \
@@ -26,14 +17,16 @@ RUN apt-get install --no-install-recommends -y \
         wget \
         ca-certificates \
         libjpeg-dev \
-        libpng-dev
+        libpng-dev \
+        ffmpeg \
+        libsm6 \
+        libxext6 \
+        libgl1-mesa-glx
 
 WORKDIR "/app"
 
 COPY . .
 
-RUN poetry update
-
 RUN poetry install
 
-CMD ["poetry","run","streamlit","run","Main.py"]
+CMD ["poetry","run","streamlit","run","Home.py", "--logger.level=debug"]
