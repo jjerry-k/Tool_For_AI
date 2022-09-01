@@ -38,3 +38,10 @@ def is_authenticated():
         authenticate()
 
     return st.session_state.authenticated
+
+def logout_callback():
+    st.session_state.authenticated = None
+    st.session_state.username = None
+
+def is_logout():
+    st.sidebar.button("Logout", on_click=logout_callback)
