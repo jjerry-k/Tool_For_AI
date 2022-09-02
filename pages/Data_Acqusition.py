@@ -3,8 +3,9 @@ st.set_page_config(layout="wide") # streamlit import 이후 가장 먼저 설정
 
 from auth import is_authenticated, is_logout
 import os, threading
-from utils.crawler import crawling, crawling_test
-from utils.mongo import insert_data, delete_data, update_data
+from utils.crawler import crawling
+from utils.mongo import insert_data, delete_data, update_data, get_data_list
+from utils.common import image_viewer, StorageConfig
 
 if is_authenticated():
     
@@ -19,15 +20,16 @@ if is_authenticated():
         keyword = st.text_input("Keyword")
         flag = st.button("Start crawling")
         if flag:
-            root = "/disk/jobs/"
-            keyword_path = os.path.join(root, keyword)
-            # os.system(f"nohup poetry run python utils/crawler.py --user {st.session_state.username} --root {root} --keyword {keyword} 1> /dev/null 2>&1 &")
-            # os.system(f"nohup poetry run python utils/crawler.py --user {st.session_state.username} --root {root} --keyword {keyword}")
-            crawling_thread = threading.Thread(target=crawling_test, name="Crawling", args=[st.session_state.username, root, keyword, insert_data])
+            keyword_path = os.path.join(StorageConfig.JOBS_ROOT, keyword)
+            crawling_thread = threading.Thread(target=crawling, name="Crawling", args=[st.session_state.username, root, keyword, insert_data])
             crawling_thread.start()
-
             st.info("Start crawling!")
-        # 크롤링 완료 여부 & DB 연동
-
+        
     elif st.session_state.task == "Cleaning": 
-        st.session_state["keyword"] = st.text_input("Keyword")
+        st.session_state.fileindex = 0
+        keyword_list = get_data_list(st.session_state["username"])
+        st.session_state.keyword = st.sidebar.selectbox("Class", options=[f"{i}: {keyword['keyword']}" for i, keyword in enumerate(keyword_list)])
+        num, st.session_state.keyword = st.session_state.keyword.split(": ")
+        st.session_state.curr_keyword = keyword_list[int(num)]
+        
+        image_viewer()

@@ -1,4 +1,5 @@
 from utils.password import get_password_hash
+from utils.common import get_file_hash
 from schema import User, Data, DB, MONGODB_USER_TABLE, MONGODB_DATA_TABLE
 
 import datetime
@@ -30,31 +31,32 @@ def delete_user(user_info: User):
         print(f"'{user_info['name']}' not exists.")
     return username_found
 
-def get_user():
+def get_user_list():
     user_list = []
     for user in DB[MONGODB_USER_TABLE].find({}):
         user_list.append(user)
     return user_list
 
 # For initialize
-user_list = get_user()
+user_list = get_user_list()
 
 if "admin" not in user_list:
     insert_user(
                 {"name": "admin", 
                 "admin": True,
-                "password": "1121"}
+                "password": "admin"}
                 )
 
 # Data Function
 def insert_data(data_info: Data):
+    keyword_found = DB[MONGODB_USER_TABLE].find_one({"keyword": data_info["keyword"]})
     scheme = {
         "time": datetime.datetime.now().strftime("%Y-%m-%d"),
         "username": data_info["username"],
         "keyword": data_info["keyword"],
         "classname": data_info["classname"],
-        "isdone": False,
-        "data": [{"filename": filename, "status": "None"} for filename in data_info["data"]]
+        "is_done": False,
+        "data": [{"filename": filename, "status": "None", "is_edited": False} for filename in data_info["data"]]
     }
     
     DB[MONGODB_DATA_TABLE].insert_one(scheme)
@@ -65,6 +67,10 @@ def update_data(data_info: Data):
 def delete_data(data_info: Data):
     pass
 
+def get_data_list(username: str):
+    keyword_found = DB[MONGODB_DATA_TABLE].find({"username": username})
+    keyword_list = [{"keyword": data["keyword"], "is_done": data["is_done"], "data": data["data"]} for data in keyword_found if data["is_done"]==False]
+    return keyword_list
 
 if __name__ == "__main__":
     # test = {"name": "", 

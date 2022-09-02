@@ -2,14 +2,12 @@ import pymongo
 import yaml
 from bson import ObjectId
 from pydantic import BaseModel, Field
+from config import MongoConfig
 
-with open(".cfg/mongo.yaml") as f:
-    cfg = yaml.load(f, Loader=yaml.FullLoader)
-
-MONGODB_URL = cfg["MONGODB_URL"]
-MONGODB_DB = cfg["MONGODB_DB"]
-MONGODB_USER_TABLE = cfg["MONGODB_USER_TABLE"]
-MONGODB_DATA_TABLE = cfg["MONGODB_DATA_TABLE"]
+MONGODB_URL = MongoConfig.URL
+MONGODB_DB = MongoConfig.DB
+MONGODB_USER_TABLE = MongoConfig.USER_TABLE
+MONGODB_DATA_TABLE = MongoConfig.DATA_TABLE
 
 CLIENT = pymongo.MongoClient(MONGODB_URL)
 

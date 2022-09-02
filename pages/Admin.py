@@ -1,12 +1,13 @@
 import streamlit as st
 st.set_page_config(layout="wide") # streamlit import 이후 가장 먼저 설정 해야함, 이후 재선언 시 오류 발생
 
-from auth import is_authenticated
-from utils.mongo import insert_user, delete_user, get_user
+from auth import is_authenticated, is_logout
+from utils.mongo import insert_user, delete_user, get_user_list
 
 if is_authenticated():
+    
     st.sidebar.text(f"User Name: {st.session_state['username']}")
-    st.sidebar.button("Logout")
+    is_logout()
     
     if not st.session_state.admin:
         st.error("This is the admin page.")
@@ -40,13 +41,13 @@ if is_authenticated():
         elif st.session_state.job == "Delete": 
             st.subheader("Delete User")
             cols = st.columns(1)
-            user_list = get_user()
+            user_list = get_user_list()[1:]
             selected_user = cols[0].selectbox("Username", options=[f"{i+1}. {user['name']}" for i, user in enumerate(user_list)])
     
             selected_user = user_list[int(selected_user.split(".")[0])-1]
-
+            st.write(selected_user)
             def callback(): 
                 if cols[0].button("2nd Check"):
                     flag = delete_user(selected_user)
-            
+                    st.write(flag)
             cols[0].button("Delete", key='delete', on_click=callback)
