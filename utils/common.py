@@ -31,9 +31,9 @@ def get_file_hash(filepath):
         md5 = hashlib.md5()
         md5.update(f.read())
     return md5.hexdigest()
-
+    
 def image_viewer():
-    cols = st.columns([1, 1])
+    cols = st.columns([1])
     
     image_file_path = os.path.join(
                                 StorageConfig.JOBS_ROOT,
@@ -43,5 +43,16 @@ def image_viewer():
                                 )
     
     img = load_img(image_file_path)
-    cols[0].image(img, caption=image_file_path.split("/")[-1])
-    
+
+    cols[0].title("Current Image")
+    cols[0].image(img, caption=image_file_path.split("/")[-1], use_column_width=True)
+
+    btn_cols = st.columns([2,1,1,1,2])  
+    btn_cols[1].button("Good")
+    btn_cols[2].button("Bad")
+    btn_cols[3].button("None")
+
+    with st.expander("Total image"):
+        st.write("Test")
+        cols = st.columns(3)
+        cols[1].slider("이미지 개수", min_value=100, max_value=500, value=200, step=50, key='max_img_num')

@@ -20,8 +20,7 @@ if is_authenticated():
         keyword = st.text_input("Keyword")
         flag = st.button("Start crawling")
         if flag:
-            keyword_path = os.path.join(StorageConfig.JOBS_ROOT, keyword)
-            crawling_thread = threading.Thread(target=crawling, name="Crawling", args=[st.session_state.username, root, keyword, insert_data])
+            crawling_thread = threading.Thread(target=crawling, name="Crawling", args=[st.session_state.username, StorageConfig.JOBS_ROOT, keyword, insert_data])
             crawling_thread.start()
             st.info("Start crawling!")
         
